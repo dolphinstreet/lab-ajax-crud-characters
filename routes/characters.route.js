@@ -21,8 +21,18 @@ router.get('/', async (req, res, next) => {
  * ? This route should create one character and respond with
  * ? the created character
  */
-router.post('/', (req, res, next) => {
-	/**Your code goes here */
+router.post('/', async (req, res, next) => {
+	try {
+		const almostCreatedCharacter = { ...req.body }
+		if (!req.body.name || !req.body.occupation || !req.body.cartoon || !req.body.weapon) {
+			res.status(400).json({ error: "Complete all the fields" })
+			return
+		}
+		const createdCharacter = await Character.create(almostCreatedCharacter)
+		res.status(201).json(createdCharacter)
+	} catch (error) {
+		next(error)
+	}
 })
 
 /**
