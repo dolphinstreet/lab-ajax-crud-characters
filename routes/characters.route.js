@@ -28,8 +28,13 @@ router.post('/', (req, res, next) => {
 /**
  * ? This route should respond with one character
  */
-router.get('/:id', (req, res, next) => {
-	/**Your code goes here */
+router.get('/:id', async (req, res, next) => {
+	try {
+		const oneCharacter = await Character.findById(req.params.id)
+		res.json(oneCharacter)
+	} catch (error) {
+		next(error)
+	}
 })
 
 /**
