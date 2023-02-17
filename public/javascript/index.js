@@ -29,6 +29,8 @@ const updateNameInput = updateForm.querySelector("[name=name]");
 const updateOccupationInput = updateForm.querySelector("[name=occupation]");
 const updateWeaponInput = updateForm.querySelector("[name=weapon]");
 const updateCartoonInput = updateForm.querySelector("[name=cartoon]");
+const updateBtn = updateForm.querySelector("#send-data")
+
 
 
 
@@ -102,14 +104,13 @@ updateForm.addEventListener('submit', async function (event) {
     });
 
     const updatedCharacter = response.data;
-    deleteBtn.style.backgroundColor = "green";
-    await fetchAll()
+    updateBtn.style.backgroundColor = "green";
     setTimeout(() => {
-      deleteBtn.style.backgroundColor = null;
-    }, 800);
+      updateBtn.style.backgroundColor = null;
+    }, 1000);
   } catch (error) {
     console.error(error)
-    deleteBtn.style.backgroundColor = "green";
+    updateBtn.style.backgroundColor = "green";
 
 
   }
