@@ -14,6 +14,23 @@ const characterTemplate = document.getElementById('template')
 const charactersContainer = document.querySelector(".characters-container")
 const nameInput = document.querySelector("[name=character-name]");
 
+const deleteInput = document.querySelector("[name=character-id-delete]");
+const deleteBtn = document.getElementById("delete-one")
+
+const addForm = document.querySelector("#new-character-form");
+const addNameInput = addForm.querySelector("[name=name]");
+const addOccupationInput = addForm.querySelector("[name=occupation]");
+const addWeaponInput = addForm.querySelector("[name=weapon]");
+const addCartoonInput = addForm.querySelector("[name=cartoon]");
+
+const updateForm = document.querySelector("#edit-character-form");
+const updateIdInput = updateForm.querySelector("[name=chr-id]");
+const updateNameInput = updateForm.querySelector("[name=name]");
+const updateOccupationInput = updateForm.querySelector("[name=occupation]");
+const updateWeaponInput = updateForm.querySelector("[name=weapon]");
+const updateCartoonInput = updateForm.querySelector("[name=cartoon]");
+
+
 
 function createCharacter(character) {
   const clone = characterTemplate.content.cloneNode(true)
@@ -23,18 +40,11 @@ function createCharacter(character) {
   clone.querySelector('.cartoon span').textContent = character.cartoon
   clone.querySelector('.weapon span').textContent = character.weapon
 
-
-  // clone
-  //   .querySelector('button.delete')
-  //   .addEventListener('click', () => deleteDuck(element._id))
-  // clone
-  //   .querySelector('button.update')
-  //   .addEventListener('click', () => fillTheUpdateForm(element))
   charactersContainer.append(clone)
 }
 
 
-document.getElementById('fetch-all').addEventListener('click', async function (event) {
+document.getElementById('fetch-all').addEventListener('click', async function fetchAll(event) {
   charactersContainer.innerHTML = ''
   try {
     const { data } = await axios.get(`${myUrl}characters`)
@@ -57,15 +67,78 @@ document.getElementById('fetch-one').addEventListener('click', async function (e
   }
 });
 
-document.getElementById('delete-one').addEventListener('click', function (event) {
+document.getElementById('delete-one').addEventListener('click', async function (event) {
+  charactersContainer.innerHTML = ''
+  try {
+    const message = await axios.delete(`${myUrl}characters/${deleteInput.value}`)
+    console.log(deleteBtn)
+    deleteBtn.style.backgroundColor = "green";
+    setTimeout(() => {
+      deleteBtn.style.backgroundColor = null;
+    }, 1000);
+    await fetchAll()
 
+  } catch (error) {
+    console.error(error)
+    deleteBtn.style.backgroundColor = "green";
+
+  }
 });
 
-document.getElementById('edit-character-form').addEventListener('submit', function (event) {
+updateForm.addEventListener('submit', async function (event) {
+  charactersContainer.innerHTML = ''
+  event.preventDefault()
+  try {
+    const toUpdateCharacter = {
+      name: updateNameInput.value,
+      occupation: updateOccupationInput.value,
+      weapon: updateWeaponInput.value,
+      cartoon: updateCartoonInput.checked
+    }
+    const response = await axios({
+      method: 'patch',
+      url: `${myUrl}characters/${updateIdInput.value}`,
+      data: toUpdateCharacter
+    });
 
+    const updatedCharacter = response.data;
+    deleteBtn.style.backgroundColor = "green";
+    await fetchAll()
+    setTimeout(() => {
+      deleteBtn.style.backgroundColor = null;
+    }, 800);
+  } catch (error) {
+    console.error(error)
+    deleteBtn.style.backgroundColor = "green";
+
+
+  }
 });
 
-document.getElementById('new-character-form').addEventListener('submit', function (event) {
+addForm.addEventListener('submit', async function (event) {
+  charactersContainer.innerHTML = ''
+  event.preventDefault()
+  try {
+    const newCharacter = {
+      name: addNameInput.value,
+      occupation: addOccupationInput.value,
+      weapon: addWeaponInput.value,
+      cartoon: addCartoonInput.checked
+    }
+    const response = await axios({
+      method: 'post',
+      url: `${myUrl}characters/`,
+      data: newCharacter
+    });
+    const createdCharacter = response.data;
+    console.log(createdCharacter)
+    createCharacter(createdCharacter)
+
+
+  } catch (error) {
+    console.error(error)
+
+  }
 
 });
 

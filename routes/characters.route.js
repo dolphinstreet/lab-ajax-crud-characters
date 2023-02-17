@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
 	try {
 		const almostCreatedCharacter = { ...req.body }
-		if (!req.body.name || !req.body.occupation || !req.body.cartoon || !req.body.weapon) {
+		if (!req.body.name || !req.body.occupation || !req.body.weapon) {
 			res.status(400).json({ error: "Complete all the fields" })
 			return
 		}
@@ -69,13 +69,12 @@ router.patch('/:id', async (req, res, next) => {
  */
 router.delete('/:id', async (req, res, next) => {
 	try {
-		const characterToUseToDelete = { ...req.body }
-		const deletedCharacter = await Character.findByIdAndDelete(req.params.id, characterToUseToDelete)
+		const deletedCharacter = await Character.findByIdAndDelete(req.params.id)
 		if (!deletedCharacter) {
-			res.status(400).json({ error: "Couldn't find this character !" })
+			res.status(400).json({ error: "Character not found" })
 			return
 		}
-		res.status(200).json(deletedCharacter)
+		res.status(200).json({ error: "Character has been successfully deleted" })
 	} catch (error) {
 		next(error)
 	}
