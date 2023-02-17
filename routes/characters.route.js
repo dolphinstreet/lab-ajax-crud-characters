@@ -51,13 +51,13 @@ router.get('/:id', async (req, res, next) => {
  */
 router.patch('/:id', async (req, res, next) => {
 	try {
-		const characterToUseToUpdate = { ...req.body }
-		const updatedCharacter = await Character.findByIdAndUpdate(req.params.id, characterToUseToUpdate)
+		const characterToUpdate = { ...req.body }
+		const updatedCharacter = await Character.findByIdAndUpdate(req.params.id, characterToUpdate, { new: true })
 		if (!updatedCharacter) {
 			res.status(400).json({ error: "Couldn't find this character !" })
 			return
 		}
-		res.status(201).json(updatedCharacter)
+		res.status(202).json(updatedCharacter)
 	} catch (error) {
 		next(error)
 	}
