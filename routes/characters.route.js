@@ -34,7 +34,6 @@ router.post('/', async (req, res, next) => {
 		next(error)
 	}
 })
-
 /**
  * ? This route should respond with one character
  */
@@ -46,21 +45,40 @@ router.get('/:id', async (req, res, next) => {
 		next(error)
 	}
 })
-
 /**
  * ? This route should update a character and respond with
  * ? the updated character
  */
-router.patch('/:id', (req, res, next) => {
-	/**Your code goes here */
+router.patch('/:id', async (req, res, next) => {
+	try {
+		const characterToUseToUpdate = { ...req.body }
+		const updatedCharacter = await Character.findByIdAndUpdate(req.params.id, characterToUseToUpdate)
+		if (!updatedCharacter) {
+			res.status(400).json({ error: "Couldn't find this character !" })
+			return
+		}
+		res.status(201).json(updatedCharacter)
+	} catch (error) {
+		next(error)
+	}
 })
 
 /**
  * ? Should delete a character and respond with a success or
  * ? error message
  */
-router.delete('/:id', (req, res, next) => {
-	/**Your code goes here */
+router.delete('/:id', async (req, res, next) => {
+	try {
+		const characterToUseToDelete = { ...req.body }
+		const deletedCharacter = await Character.findByIdAndDelete(req.params.id, characterToUseToDelete)
+		if (!deletedCharacter) {
+			res.status(400).json({ error: "Couldn't find this character !" })
+			return
+		}
+		res.status(200).json(deletedCharacter)
+	} catch (error) {
+		next(error)
+	}
 })
 
 module.exports = router
