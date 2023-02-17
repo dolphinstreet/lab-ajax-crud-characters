@@ -52,6 +52,10 @@ router.get('/:id', async (req, res, next) => {
 router.patch('/:id', async (req, res, next) => {
 	try {
 		const characterToUpdate = { ...req.body }
+		const actualCharacter = await Character.findById(req.params.id)
+		if (!characterToUpdate.name) { characterToUpdate.name = actualCharacter.name }
+		if (!characterToUpdate.occupation) { characterToUpdate.occupation = actualCharacter.occupation }
+		if (!characterToUpdate.weapon) { characterToUpdate.weapon = actualCharacter.weapon }
 		const updatedCharacter = await Character.findByIdAndUpdate(req.params.id, characterToUpdate, { new: true })
 		if (!updatedCharacter) {
 			res.status(400).json({ error: "Couldn't find this character !" })
